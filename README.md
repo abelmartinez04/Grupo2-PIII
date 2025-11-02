@@ -32,6 +32,8 @@ _Requisitos_:
 - JS
 - Nodes.js
 - Dotenv
+- Express
+- EJS
 
 ## Guía completa para configurar y ejecutar el proyecto en tu máquina local.
 
@@ -92,4 +94,9 @@ node config/db.js
 Si todo está correcto, verás:
 ```
 ✅ Conexión exitosa a la base de datos
+```
+
+### 8. Si todo es correcto, ejecutar lo siguiente en la terminal para correr el proyecto en localhost:
+```
+node index.js
 ```
