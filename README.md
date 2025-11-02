@@ -41,11 +41,7 @@ Clona el proyecto usando **GitHub Desktop**
 
 ### **2.** Crear la base de datos en MySQL
 
-Abre tu consola de MySQL o MySQL Workbench y ejecuta:
-
-```
-CREATE DATABASE farmacia_db;
-```
+Abre tu consola de MySQL o MySQL Workbench y ejecuta los archivos: ```farmacia_db.sql``` e ```insertions``` para crear la base de datos e insertar algunos medicamentos principales para el inventario.
 
 ### **3.** Instalar Node.js
 Descarga e instala Node.js:
@@ -65,13 +61,17 @@ En la terminal del proyecto, ejecuta:
 ```
 npm init -y
 ```
-> ⚠️ En el package.json, cambia la propiedad "main" de "index.js" a "index.html" si aplica.
 
 ### **5.** Instalar dependencias
 Instala las librerías necesarias:
 ```
 npm install mysql2 dotenv
+npm install express ejs
 ```
+> ⚠️En ```package.json``` revisar esta linea (si aparece con 'commonjs' en vez de 'module'):
+```"type": "commonjs",```
+> cambiar por
+```"type": "module",```
 
 ### **6.** Crear archivo .env
 Crea un archivo ```.env``` en la raíz del proyecto o en ```/config``` con tus datos de conexión:

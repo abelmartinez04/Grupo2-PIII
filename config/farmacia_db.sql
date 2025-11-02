@@ -4,7 +4,6 @@
 
 CREATE DATABASE IF NOT EXISTS farmacia_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE farmacia_db;
-
 -- ====================================================
 -- TABLA: roles / Descripción: Define los roles del sistema
 -- ====================================================
@@ -314,7 +313,7 @@ INSERT INTO roles (nombre, descripcion) VALUES
 
 INSERT INTO usuarios (nombre_completo, email, username, password_hash, rol_id, telefono, estado) VALUES
 -- Administrador (Rol 1)
-('Abel Martinez', 'abel04@farmaciasalud.com', 'admin', '$2b$10$rXjz5Y5XQ5z5Y5XQ5z5Y5uN1Y5XQ5z5Y5XQ5z5Y5XQ5z5Y5XQ5z5Y5', 1, '809-555-0001', 'activo'),
+('Abel Martinez', 'abel04@farmaciasalud.com', 'admin', '$2b$10$rXjz5Y5XQ5z5Y5XQ5z5Y5uN1Y5XQ5z5Y5XQ5z5Y5XQ5z5Y5XQ5z5Y5', 1, '809-555-0001', 'activo')
 
 -- ====================================================
 -- VISTAS ÚTILES
