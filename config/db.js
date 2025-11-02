@@ -23,7 +23,7 @@ connection.connect(function(err){
     if(err){
         throw err;
     }else{
-        console.log("conexion exitosa");
+        console.log("✅Conexion exitosa");
     }
 });
 
