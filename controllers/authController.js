@@ -21,14 +21,23 @@ const authController = {
         return res.render("auth/login", { message: "Contraseña incorrecta" });
       }
 
+      let rolNombre = "usuario";
+      if (usuario.rol_id === 1) rolNombre = "admin";
+      else if (usuario.rol_id === 2) rolNombre = "empleado";
+
       req.session.user = {
         id: usuario.id,
         username: usuario.username,
         rol_id: usuario.rol_id,
+        rol: rolNombre,
         nombre: usuario.nombre_completo,
       };
 
-      return res.redirect("/");
+      if (usuario.rol_id === 1) {
+        return res.redirect("/admin");
+    } else {
+        return res.redirect("/");
+    }
     } catch (error) {
       console.error("Error al iniciar sesión:", error);
       res.render("auth/login", { message: "Error interno del servidor" });
