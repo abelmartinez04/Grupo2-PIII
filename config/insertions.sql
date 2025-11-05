@@ -1,6 +1,10 @@
 -- Insertions for farmacia_db
 USE farmacia_db;
 
+INSERT INTO usuarios (nombre_completo, email, username, password_hash, rol_id, telefono, estado) VALUES
+-- Administrador (Rol 1)
+('Carlos', 'carlos@gmail.com', 'carlo', '$2b$10$trjI6P10y/ogaUdWBNqI2.N31sNE3z1SnLIXFuvtScOl2RDGXVagK', 1, '809-555-0001', 'activo'),
+('Juana', 'juana@gmail.com', 'juana', '$2b$10$trjI6P10y/ogaUdWBNqI2.N31sNE3z1SnLIXFuvtScOl2RDGXVagK', 3, '809-555-0001', 'activo');
 -- ===========================
 -- PROVEEDORES (2 registros)
 -- ===========================
