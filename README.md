@@ -69,6 +69,9 @@ Instala las librerías necesarias:
 ```
 npm install mysql2 dotenv
 npm install express ejs
+npm install bcrypt
+npm install express-session
+npm install nodemailer
 ```
 > ⚠️En ```package.json``` revisar esta linea (si aparece con 'commonjs' en vez de 'module'):
 ```"type": "commonjs",```
@@ -82,6 +85,7 @@ HOST=localhost
 USER=root
 PASS=MiContraseña
 DB=farmacia_db
+CLAVE_SESION=clave_super_secreta
 ```
 > Cambiar "MiContraseña" por la contraseña real de mysql
 

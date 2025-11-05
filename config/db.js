@@ -1,30 +1,32 @@
-const mysql = require("mysql2");
-const dotenv = require("dotenv");
+import mysql from 'mysql2/promise';
+import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-// Cargar las variables del archivo .env
-dotenv.config({ path: './config/.env' });
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-// Variables desde .env
-const host = process.env.HOST;
-const user = process.env.USER;
-const pass = process.env.PASS;
-const db   = process.env.DB;
+// Cargar variables de entorno desde config/.env si existe
+dotenv.config({ path: path.join(__dirname, '.env') });
 
-// Crear conexión
-const connection = mysql.createConnection({
-  host: host,
-  user: user,
-  password: pass,
-  database: db
+const pool = mysql.createPool({
+    host: process.env.HOST || 'localhost',
+    user: process.env.USER || 'root',
+    password: process.env.PASS || '',
+    database: process.env.DB || 'farmacia_db',
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0
 });
 
-// Probar conexión
-connection.connect(function(err){
-    if(err){
-        throw err;
-    }else{
-        console.log("✅Conexion exitosa");
-    }
-});
+// Probar una conexión al iniciar (no lanzar si falla, solo log)
+pool.getConnection()
+    .then(conn => {
+        console.log('✅ Conexión MySQL (pool) establecida');
+        conn.release();
+    })
+    .catch(err => {
+        console.error('❌ Error al conectar a la base de datos:', err.message);
+    });
 
-module.exports = connection;
+export default pool;
