@@ -1,0 +1,34 @@
+<%- include("../../partials/header") %>
+
+<main class="flex-grow-1 bg-light">
+  <div class="container py-4">
+    <section class="d-flex justify-content-between align-items-center mb-3">
+      <h3 class="m-0">Gestión de Proveedores</h3>
+      <button id="btn-nuevo" class="btn btn-success">
+        <i class="bi bi-plus-circle"></i> Nuevo proveedor
+      </button>
+    </section>
+
+    <section>
+      <div class="table-responsive shadow-sm rounded bg-white p-3">
+        <table id="proveedores-table" class="table table-hover align-middle">
+          <thead class="table-primary">
+            <tr>
+              <th>ID</th>
+              <th>Nombre</th>
+              <th>RNC</th>
+              <th>Teléfono</th>
+              <th>Email</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+</main>
+
+<%- include("../../partials/footer") %>
+<script src="/js/proveedores.js"></script>
