@@ -27,8 +27,9 @@ import medicamentoRoutes from "./routes/medicamentoRoutes.js";
 import proveedoresRoutes from "./routes/proveedoresRoutes.js";
 import categoriasRoutes from './routes/categorias.routes.js';
 import vistasRoutes from "./routes/vistasRoutes.js";
-// import ventaRoutes from "./routes/ventaRoutes.js";
-// import usuarioRoutes from "./routes/usuarioRoutes.js";
+import ventaRoutes from "./routes/ventaRoutes.js";
+import reporteFacturaRoutes from "./routes/reporteFacturaRoutes.js";
+
 
 
 
@@ -53,13 +54,14 @@ app.use("/admin", adminRoutes);
 app.use('/api/medicamentos', medicamentoRoutes);
 app.use("/api/proveedores", proveedoresRoutes);
 app.use('/api/categorias', categoriasRoutes);
+app.use('/ventas', requireLogin, ventaRoutes);
+app.use('/reporte-facturas', requireLogin, reporteFacturaRoutes);
 app.use("/", vistasRoutes);
 
 
 // Rutas principales
 app.get("/", requireLogin, (req, res) => res.render("index", { activePage: 'inicio' }));
 app.get("/inventario", requireLogin, (req, res) => res.render("medicamentos/inventario", { activePage: 'inventario' })); // Verificar con Robert
-app.get("/ventas", requireLogin, (req, res) => res.render("ventas", { activePage: 'ventas' }));
 app.get("/reportes", requireLogin, (req, res) => res.render("reportes", { activePage: 'reportes' }));
 app.get("/medicamentos/categorias", requireLogin, (req, res) =>
   res.render("medicamentos/categorias/index", { activePage: "categorias" })
@@ -70,4 +72,4 @@ app.get("/medicamentos/proveedores", requireLogin, (req, res) =>
 
 // Puerto
 const PORT = 3000;
-app.listen(PORT, () => console.log(`✅ Servidor corriendo en http://localhost:${PORT}`));
+app.listen(PORT, () => console.log(`✅ Servidor corriendo en http://localhost:${PORT}`));// 

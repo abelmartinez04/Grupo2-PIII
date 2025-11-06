@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Factura <%= factura.numero_factura %></title>
+    <style>
+        /* Estilos de tu imprimir.php adaptados */
+        @media print {
+            .no-print { display: none; }
+        }
+        body {
+            background: white;
+            font-family: 'Courier New', Courier, monospace;
+            color: #000;
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+            font-size: 14px;
+        }
+        .contenedor {
+            width: 100%;
+            max-width: 400px; /* Ancho típico de recibo */
+            border: 1px dashed #666;
+            padding: 10px;
+        }
+        header, footer {
+            text-align: center;
+            font-weight: bold;
+            padding: 10px 0;
+        }
+        header {
+            border-bottom: 1px dashed #666;
+        }
+        footer {
+            border-top: 1px dashed #666;
+            font-size: 12px;
+            margin-top: 20px;
+        }
+        .datos p {
+            margin: 4px 0;
+        }
+        .datos strong {
+            display: inline-block;
+            width: 120px;
+        }
+        h4 {
+            text-align: center;
+            border-top: 1px dashed #666;
+            border-bottom: 1px dashed #666;
+            padding: 5px 0;
+            margin: 15px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            margin-top: 10px;
+        }
+        th, td {
+            padding: 3px;
+        }
+        thead th {
+            border-bottom: 1px solid #000;
+            text-align: left;
+        }
+        td.cantidad, th.cantidad {
+            width: 40px; text-align: center;
+        }
+        td.precio, th.precio,
+        td.total, th.total {
+            width: 80px; text-align: right;
+        }
+        .total-pagar {
+            margin-top: 15px;
+            font-weight: bold;
+            text-align: right;
+            font-size: 16px;
+        }
+        .botones {
+            text-align: center;
+            margin-top: 25px;
+        }
+        .botones button, .botones a {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            text-decoration: none;
+            margin: 5px;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<div class="contenedor">
+
+    <header>
+        Sistema de Ventas - Farmacia
+        <br>
+        Factura de Venta
+    </header>
+
+    <div class="datos">
+        <p><strong>Nº Factura:</strong> <%= factura.numero_factura %></p>
+        <p><strong>Fecha:</strong> <%= new Date(factura.fecha_venta).toLocaleString('es-DO') %></p>
+        <p><strong>Cajero:</strong> <%= factura.usuario_nombre %></p>
+        <p><strong>Cliente:</strong> <%= factura.cliente_nombre || 'Cliente General' %></p>
+        <% if (factura.cliente_cedula) { %>
+            <p><strong>Cédula/RNC:</strong> <%= factura.cliente_cedula %></p>
+        <% } %>
+    </div>
+
+    <h4>ARTÍCULOS VENDIDOS</h4>
+
+    <table>
+        <thead>
+            <tr>
+                <th class="cantidad">CANT.</th>
+                <th class="precio">PRECIO</th>
+                <th>DESCRIPCIÓN</th>
+                <th class="total">TOTAL</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% detalles.forEach(item => { %>
+                <tr>
+                    <td class="cantidad"><%= item.cantidad %></td>
+                    <td class="precio">RD$ <%= parseFloat(item.precio_unitario).toFixed(2) %></td>
+                    <td><%= item.medicamento_nombre %></td>
+                    <td class="total">RD$ <%= parseFloat(item.subtotal).toFixed(2) %></td>
+                </tr>
+            <% }) %>
+        </tbody>
+    </table>
+
+    <hr style="border: 1px dashed #666; margin-top: 10px;">
+
+    <div class="total-pagar">
+        TOTAL A PAGAR: RD$ <%= parseFloat(factura.total).toFixed(2) %>
+    </div>
+    
+    <% if (factura.notas) { %>
+        <div class="comentario" style="margin-top: 10px; font-size: 12px;">
+            <strong>COMENTARIO:</strong> <%= factura.notas %>
+        </div>
+    <% } %>
+
+
+    <div class="botones no-print">
+        <button onclick="window.print()">🖨️ Imprimir Factura</button>
+        <a href="/ventas">🔙 Volver a Ventas</a>
+    </div>
+
+    <footer>
+        Gracias por su compra.
+    </footer>
+
+</div>
+
+<script classf="no-print">
+    // Opcional: imprimir automáticamente al cargar
+    // window.onload = () => {
+    //     window.print();
+    // };
+</script>
+
+</body>
+</html>
