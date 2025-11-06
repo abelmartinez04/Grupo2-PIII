@@ -27,9 +27,9 @@ import medicamentoRoutes from "./routes/medicamentoRoutes.js";
 import proveedoresRoutes from "./routes/proveedoresRoutes.js";
 import categoriasRoutes from './routes/categorias.routes.js';
 import vistasRoutes from "./routes/vistasRoutes.js";
-// import ventaRoutes from "./routes/ventaRoutes.js";
-// import usuarioRoutes from "./routes/usuarioRoutes.js";
+import ventaRoutes from "./routes/ventaRoutes.js";
 import reporteFacturaRoutes from "./routes/reporteFacturaRoutes.js";
+
 
 
 
@@ -54,6 +54,8 @@ app.use("/admin", adminRoutes);
 app.use('/api/medicamentos', medicamentoRoutes);
 app.use("/api/proveedores", proveedoresRoutes);
 app.use('/api/categorias', categoriasRoutes);
+app.use('/ventas', requireLogin, ventaRoutes);
+app.use('/reporte-facturas', requireLogin, reporteFacturaRoutes);
 app.use("/", vistasRoutes);
 
 
