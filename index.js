@@ -29,7 +29,7 @@ import categoriasRoutes from './routes/categorias.routes.js';
 import vistasRoutes from "./routes/vistasRoutes.js";
 import ventaRoutes from "./routes/ventaRoutes.js";
 import reporteFacturaRoutes from "./routes/reporteFacturaRoutes.js";
-
+import alertasRoutes from "./routes/alertasRoutes.js";
 
 
 
@@ -57,7 +57,7 @@ app.use('/api/categorias', categoriasRoutes);
 app.use('/ventas', requireLogin, ventaRoutes);
 app.use('/reporte-facturas', requireLogin, reporteFacturaRoutes);
 app.use("/", vistasRoutes);
-
+app.use("/api/alertas", alertasRoutes);
 
 // Rutas principales
 app.get("/", requireLogin, (req, res) => res.render("index", { activePage: 'inicio' }));
