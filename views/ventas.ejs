@@ -1,10 +1,229 @@
 <%- include("partials/header") %>
 
-<main class="flex-grow-1 d-flex align-items-center justify-content-center bg-light">
-  <div class="text-center py-5">
-    <h1 class="fw-bold text-success mb-4">Ventas</h1>
-    <p class="text-muted">Aquí podrás gestionar las ventas.</p>
+<main class="flex-grow-1 d-flex align-items-center bg-light">
+  <div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+  <h1 class="fw-bold text-success mb-0">Nueva Venta</h1>
+  <a href="/reporte-facturas" class="btn btn-secondary">
+    Ver Reporte de Facturas
+  </a>
+</div>
+
+    <form method="POST" action="/ventas">
+      
+      <section class="card mb-4">
+        <div class="card-header">
+          Paso 1: Información del Cliente
+        </div>
+        <div class="card-body">
+          <div class="mb-3">
+            <label class="form-label">Tipo de Cliente</label><br>
+            <input type="radio" class="form-check-input" name="tipo_cliente" id="tipoNuevo" value="nuevo" checked onchange="toggleCliente('nuevo')">
+            <label for="tipoNuevo" class="form-check-label">Nuevo</label>
+            &nbsp;&nbsp;
+            <input type="radio" class="form-check-input" name="tipo_cliente" id="tipoExistente" value="existente" onchange="toggleCliente('existente')">
+            <label for="tipoExistente" class="form-check-label">Existente</label>
+          </div>
+
+          <div id="nuevoCliente">
+            <div class="row g-3">
+              <div class="col-md-8">
+                <label for="nombre_cliente_nuevo" class="form-label">Nombre del Cliente</label>
+                <input type="text" id="nombre_cliente_nuevo" name="nombre_cliente_nuevo" class="form-control" placeholder="Nombre completo" required>
+              </div>
+              <div class="col-md-4">
+                <label for="cedula_cliente_nuevo" class="form-label">Cédula (Opcional)</label>
+                <input type="text" id="cedula_cliente_nuevo" name="cedula_cliente_nuevo" class="form-control" placeholder="Cédula/RNC">
+              </div>
+            </div>
+          </div>
+
+          <div id="existenteCliente" style="display:none;">
+            <label for="cliente_existente" class="form-label">Seleccione Cliente Existente</label>
+            <select id="cliente_existente" name="cliente_existente" class="form-select">
+              <option value="">-- Seleccione un cliente --</option>
+              <% clientes.forEach(cliente => { %>
+                <option value="<%= cliente.id %>">
+                  <%= cliente.nombre_completo %> (<%= cliente.cedula || 'N/D' %>)
+                </option>
+              <% }) %>
+            </select>
+          </div>
+        </div>
+      </section>
+
+      <section class="card mb-4">
+        <div class="card-header">
+          Paso 2: Artículos de la Venta
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th style="width: 50%;">Artículo</th>
+                  <th>Cantidad</th>
+                  <th>Precio Unitario</th>
+                  <th>Total</th>
+                  <th>Quitar</th>
+                </tr>
+              </thead>
+              <tbody id="tabla-articulos">
+                </tbody>
+            </table>
+          </div>
+          <button type="button" class="btn btn-primary" onclick="agregarFila()">
+            Agregar Artículo
+          </button>
+        </div>
+      </section>
+
+      <section class="card mb-4">
+        <div class="card-header">
+          Paso 3: Pago y Finalización
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-6">
+              <label for="metodo_pago" class="form-label">Método de Pago</label>
+              <select name="metodo_pago" id="metodo_pago" class="form-select">
+                <option value="efectivo">Efectivo</option>
+                <option value="tarjeta">Tarjeta</option>
+                <option value="transferencia">Transferencia</option>
+              </select>
+            </div>
+            
+            <div class="col-md-6 text-md-end">
+              <h3 class="fw-bold">Total General:</h3>
+              <h2 class="fw-bold text-success" id="totalGeneral">RD$ 0.00</h2>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="text-end">
+        <button type="submit" class="btn btn-success btn-lg">
+          Guardar Venta
+        </button>
+      </div>
+
+    </form>
   </div>
 </main>
 
+<script>
+  // Ponemos los datos de medicamentos (pasados por EJS) en una variable JS
+  const listaMedicamentos = <%- JSON.stringify(medicamentos) %>;
+  let indiceFila = 0;
+
+  // Función para poblar el <select> de medicamentos
+  function crearSelectorMedicamentos() {
+    let opcionesHTML = '<option value="">-- Seleccionar Artículo --</option>';
+    listaMedicamentos.forEach(med => {
+      opcionesHTML += `<option value="${med.id}" data-precio="${med.precio_venta}" data-stock="${med.stock_total}">
+        ${med.nombre} (Stock: ${med.stock_total})
+      </option>`;
+    });
+    return opcionesHTML;
+  }
+  const selectorHTML = crearSelectorMedicamentos();
+
+
+  // ---- Lógica del formulario (casi idéntica a tu PHP) ----
+
+  function toggleCliente(tipo) {
+    if (tipo === 'nuevo') {
+      document.getElementById('nuevoCliente').style.display = 'block';
+      document.getElementById('existenteCliente').style.display = 'none';
+      document.getElementById('nombre_cliente_nuevo').required = true;
+      document.getElementById('cliente_existente').required = false;
+    } else {
+      document.getElementById('nuevoCliente').style.display = 'none';
+      document.getElementById('existenteCliente').style.display = 'block';
+      document.getElementById('nombre_cliente_nuevo').required = false;
+      document.getElementById('cliente_existente').required = true;
+    }
+  }
+
+  function agregarFila() {
+    const fila = document.createElement('tr');
+    // Usamos 'articulos[${indiceFila}][id]' para que Node.js (con urlencoded)
+    // lo parsee como un array de objetos.
+    fila.innerHTML = `
+      <td>
+        <select name="articulos[${indiceFila}][id]" class="form-select" onchange="actualizarPrecioYStock(this)" required>
+          ${selectorHTML}
+        </select>
+        <small class="text-danger stock-warning" style="display:none;"></small>
+      </td>
+      <td>
+        <input type="number" name="articulos[${indiceFila}][cantidad]" class="form-control" value="1" min="1" onchange="calcularTotal()" oninput="calcularTotal()" required>
+      </td>
+      <td>
+        <input type="number" name="articulos[${indiceFila}][precio]" class="form-control" step="0.01" onchange="calcularTotal()" oninput="calcularTotal()" required>
+      </td>
+      <td class="total-fila fw-bold">RD$ 0.00</td>
+      <td>
+        <button type="button" class="btn btn-danger btn-sm" onclick="eliminarFila(this)">X</button>
+      </td>
+    `;
+    document.getElementById('tabla-articulos').appendChild(fila);
+    indiceFila++;
+  }
+
+  function eliminarFila(btn) {
+    btn.closest('tr').remove();
+    calcularTotal();
+  }
+
+  function actualizarPrecioYStock(select) {
+    const opcion = select.options[select.selectedIndex];
+    const fila = select.closest('tr');
+    const precioInput = fila.querySelector('input[name*="[precio]"]');
+    const cantidadInput = fila.querySelector('input[name*="[cantidad]"]');
+    const stockWarning = fila.querySelector('.stock-warning');
+    
+    if (opcion.value) {
+      const precio = parseFloat(opcion.getAttribute('data-precio'));
+      const stock = parseInt(opcion.getAttribute('data-stock'), 10);
+      
+      precioInput.value = precio.toFixed(2);
+      cantidadInput.max = stock; // ¡Importante! Poner límite de stock
+      
+      // Mostrar advertencia si el stock es bajo
+      if (stock <= 10) {
+        stockWarning.textContent = `¡Advertencia: Solo quedan ${stock} unidades!`;
+        stockWarning.style.display = 'block';
+      } else {
+        stockWarning.style.display = 'none';
+      }
+
+    } else {
+      precioInput.value = '0.00';
+    }
+    calcularTotal();
+  }
+
+  function calcularTotal() {
+    const filas = document.querySelectorAll('#tabla-articulos tr');
+    let total = 0;
+    
+    filas.forEach(fila => {
+      const cantidad = parseFloat(fila.querySelector('input[name*="[cantidad]"]').value) || 0;
+      const precio = parseFloat(fila.querySelector('input[name*="[precio]"]').value) || 0;
+      const totalFila = cantidad * precio;
+      
+      fila.querySelector('.total-fila').textContent = `RD$ ${totalFila.toFixed(2)}`;
+      total += totalFila;
+    });
+    
+    document.getElementById('totalGeneral').textContent = `RD$ ${total.toFixed(2)}`;
+  }
+
+  // Agrega una fila al cargar la página y activa el toggle
+  window.onload = () => {
+    agregarFila();
+    toggleCliente('nuevo');
+  };
+</script>
 <%- include("partials/footer") %>
