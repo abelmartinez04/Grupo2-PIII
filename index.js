@@ -62,7 +62,6 @@ app.use("/", vistasRoutes);
 // Rutas principales
 app.get("/", requireLogin, (req, res) => res.render("index", { activePage: 'inicio' }));
 app.get("/inventario", requireLogin, (req, res) => res.render("medicamentos/inventario", { activePage: 'inventario' })); // Verificar con Robert
-app.get("/reportes", requireLogin, (req, res) => res.render("reportes", { activePage: 'reportes' }));
 app.get("/medicamentos/categorias", requireLogin, (req, res) =>
   res.render("medicamentos/categorias/index", { activePage: "categorias" })
 );
